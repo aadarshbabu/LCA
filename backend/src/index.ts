@@ -13,6 +13,15 @@ declare global {
 
 import express from "express";
 import dotenv from "dotenv";
+
+const envFile =
+  process.env.NODE_ENV === "development"
+    ? ".env.development"
+    : ".env.production";
+
+dotenv.config({ path: `${process.cwd()}/${envFile}` });
+console.log(`Load ${process.cwd()}/${envFile}`);
+
 import authRoutes from "./routes/authRoutes";
 import videoRoutes from "./routes/videoRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
@@ -26,7 +35,6 @@ import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 const prisma = new PrismaClient();
