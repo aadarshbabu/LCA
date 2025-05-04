@@ -64,7 +64,11 @@ export const getVideo = async (req: Request, res: Response) => {
       if (!userId) {
         res
           .status(401)
-          .json({ error: "Authentication required to access this video." });
+          .json({
+            error: "Authentication required to access this video.",
+            userId,
+            login: false,
+          });
         return;
       }
 

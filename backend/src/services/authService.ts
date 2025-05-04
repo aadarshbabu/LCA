@@ -2,6 +2,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import { StorageProvider } from "../utils/storageProvider";
+import {
+  createSession,
+  getActiveSessionsCount,
+  deleteOldestSession,
+} from "../services/authService";
 
 const prisma = new PrismaClient();
 
@@ -54,6 +59,16 @@ export const loginUser = async (email: string, password: string) => {
       expiresIn: "1h",
     }
   );
+
+  const maxDevices = 3; // Maximum allowed devices
+  const activeSessions = await getActiveSessionsCount(user.id);
+
+  if (activeSessions >= maxDevices) {
+    await deleteOldestSession(user.id);
+  }
+
+  await createSession(user.id, token);
+
   return { user, token };
 };
 
@@ -136,4 +151,41 @@ export const updateProfilePicture = async (
     where: { id: userId },
     data: { profilePictureUrl: fileUrl },
   });
+};
+
+export const createSession = async (userId: string, token: string) => {
+  return prisma.session.create({
+    data: {
+      userId,
+      token,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour from now
+    },
+  });
+};
+
+export const expireSession = async (token: string) => {
+  return prisma.session.updateMany({
+    where: { token },
+    data: { expired: true },
+  });
+};
+
+export const getActiveSessionsCount = async (userId: string) => {
+  return prisma.session.count({
+    where: { userId, expired: false },
+  });
+};
+
+export const deleteOldestSession = async (userId: string) => {
+  const oldestSession = await prisma.session.findFirst({
+    where: { userId, expired: false },
+    orderBy: { createdAt: "asc" },
+  });
+
+  if (oldestSession) {
+    await prisma.session.update({
+      where: { id: oldestSession.id },
+      data: { expired: true },
+    });
+  }
 };

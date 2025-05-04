@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
   addCategory,
   fetchCategories,
+  fetchCategoriesWithVideoCount,
+  fetchPopularCategories,
 } from "../controllers/categoryController";
 import { authenticate } from "../middleware/authenticate";
 
@@ -34,5 +36,13 @@ const router = Router();
 
 router.post("/", authenticate, addCategory);
 router.get("/", authenticate, fetchCategories);
+
+router.get(
+  "/categories-with-video-count",
+  authenticate,
+  fetchCategoriesWithVideoCount
+);
+
+router.get("/popular-categories", fetchPopularCategories);
 
 export default router;

@@ -6,12 +6,13 @@ export const authenticate = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token =
+    req.cookies?.authToken ?? req.headers?.authorization?.split(" ")[1]; // Retrieve token from cookies
+
+  console.log("token", req.cookies);
 
   if (!token) {
-    res
-      .status(401)
-      .json({ error: "Unauthorized", auth: req.headers.authorization });
+    res.status(401).json({ error: "Unauthorized" });
     return; // Ensure the request ends here
   }
 

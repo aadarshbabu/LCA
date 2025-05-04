@@ -6,6 +6,7 @@ import {
   getUserProfileService,
   updateProfilePicture,
   getUserByEmail,
+  // addToBlacklist,
 } from "../services/authService";
 import { Prisma } from "@prisma/client";
 import { initializeWallet } from "../services/walletService";
@@ -58,6 +59,16 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const { user, token } = await loginUser(email, password);
+
+    // Set the token in a cookie
+    res.cookie("authToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      domain: "localhost",
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
+    });
+
     res.status(200).json({ user, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -121,5 +132,29 @@ export const uploadProfilePicture = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to upload profile picture." });
+  }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    // const token =
+    //   req.cookies.authToken || req.headers.authorization?.split(" ")[1];
+
+    // if (token) {
+    //   // Add the token to the blacklist
+    //   await addToBlacklist(token);
+    // }
+
+    // Clear the auth token cookie
+    res.clearCookie("authToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      domain: "localhost",
+    });
+
+    res.status(200).json({ message: "Logged out successfully." });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to log out." });
   }
 };

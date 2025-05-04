@@ -7,7 +7,8 @@ export const attachUserInReq = (
   next: NextFunction
 ) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const token =
+      req.cookies?.authToken ?? req?.headers?.authorization?.split(" ")[1];
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
       id: string;
@@ -16,7 +17,6 @@ export const attachUserInReq = (
     req.user = { id: decoded.id, isAdmin: decoded.isAdmin, ...decoded };
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
-    return; // Ensure the request ends here
+    next();
   }
 };

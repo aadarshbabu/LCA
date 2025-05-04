@@ -5,6 +5,7 @@ import {
   oauthCallback,
   getProfile,
   uploadProfilePicture,
+  logout,
 } from "../controllers/authController";
 import { authenticate } from "../middleware/authenticate";
 import { upload } from "../multer/multerConfig";
@@ -106,5 +107,6 @@ router.post(
   upload.single("profilePicture"),
   uploadProfilePicture
 );
+router.post("/logout", logout);
 
 export default router;

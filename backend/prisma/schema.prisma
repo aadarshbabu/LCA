@@ -45,6 +45,7 @@ model User {
   purchases Purchase[]
   payments   Payment[]
   couponRedemptions CouponRedemption[]
+  sessions  Session[]
 }
 
 model Category {
@@ -66,6 +67,7 @@ model Video {
   category    Category @relation(fields: [categoryId], references: [id])
   views       Int      @default(0)
   duration    String
+  description String   @default("")
   isApproved  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -123,4 +125,15 @@ model CouponRedemption {
   createdAt DateTime @default(now())
 
   @@unique([userId, couponId]) // Ensure a user can redeem a coupon only once
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  expired   Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

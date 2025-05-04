@@ -19,6 +19,7 @@ const envFile =
     ? ".env.development"
     : ".env.production";
 
+dotenv.config({ path: `${process.cwd()}/.env` });
 dotenv.config({ path: `${process.cwd()}/${envFile}` });
 
 import authRoutes from "./routes/authRoutes";
@@ -33,6 +34,7 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -71,12 +73,14 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cookieParser());
+
 // Middleware
 app.use(express.json()); // Ensure this middleware is included
 
 // CORS configuration
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(",") || [
-  "http://localhost:3000",
+  "http://localhost:3000", // Added client origin
 ];
 app.use(
   cors({

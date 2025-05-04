@@ -21,11 +21,13 @@ import { authService, RegisterUserData } from "@/services/modules/auth";
 import { UserRegistrationSchema } from "@/schema/authSchema";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AuthPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { setSession } = useAuth();
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
@@ -81,6 +83,7 @@ const AuthPage = () => {
               title: "Login successful",
               description: "Welcome back!",
             });
+            setSession(data.user.id); // This session user update the auth Context. and when auth context update it's fetch the user profile.
             navigate("/");
           },
           onError(error) {

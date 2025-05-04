@@ -4,4 +4,5 @@ const API_URL = import.meta.env.VITE_API_URL || "https://api.example.com"; // Re
 
 export const apiClient = axios.create({
   baseURL: API_URL,
+  withCredentials: true,
 });
