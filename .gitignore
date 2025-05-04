@@ -1,0 +1,8 @@
+backend/node_modules
+backend/.env.production
+backend/.env.development
+learn-code-anywhere/node_modules
+learn-code-anywhere/.env.production
+learn-code-anywhere/.env.development
+
+git_old

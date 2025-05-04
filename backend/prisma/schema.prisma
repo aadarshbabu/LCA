@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Wallet {
+  id        String   @id @default(uuid())
+  balance   Float    @default(0.0)
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  firstName String   @default("")
+  lastName  String   @default("")
+  phone     String?  @unique
+  isAdmin   Boolean  @default(false)
+  isVerified Boolean  @default(false)
+  isBlocked  Boolean  @default(false)
+  isDeleted Boolean  @default(false)
+  externalId String?  // For external authentication (e.g., Google, GitHub)
+  type      String?  // Type of user (e.g., "admin", "user", "guest")
+  password  String?
+  googleId  String?
+  githubId  String?
+  profilePictureUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  videos    Video[]
+  wallet    Wallet?
+  purchases Purchase[]
+  payments   Payment[]
+  couponRedemptions CouponRedemption[]
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  isDefault   Boolean  @default(false)
+  createdBy   String?  // User ID if user-generated, null for default categories
+  videos      Video[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Video {
+  id          String   @id @default(uuid())
+  title       String
+  thumbnail   String
+  price       Float
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  views       Int      @default(0)
+  duration    String
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  purchases   Purchase[]
+  url           String?  // URL for YouTube videos
+  resolutions   Json?    // JSON object to store custom video URLs for different qualities, e.g., { "360p": "url1", "720p": "url2", "1080p": "url3" }
+  isYoutubeUrl  Boolean  @default(false) // Flag to indicate if the video is a YouTube URL or a custom upload
+}
+
+model Purchase {
+  id        String   @id @default(uuid())
+  userId    String
+  videoId   String
+  user      User     @relation(fields: [userId], references: [id])
+  video     Video    @relation(fields: [videoId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, videoId]) // Ensure a user cannot purchase the same video multiple times
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  userId      String
+  amount      Float
+  currency    String
+  status      String
+  razorpayId  String   @unique
+  discount    Float    @default(0.0) // Discount applied to the payment
+  couponCode  String?  // Coupon code used for the payment
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Coupon {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  discount    Float    // Discount amount or percentage
+  isPercentage Boolean  // True if discount is a percentage, false if flat
+  minValue    Float    // Minimum order value to apply the coupon
+  expiryDate  DateTime // Expiry date for the coupon
+  maxUsers    Int      // Maximum number of users allowed to redeem this coupon
+  redeemedBy  CouponRedemption[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CouponRedemption {
+  id        String   @id @default(uuid())
+  userId    String
+  couponId  String
+  user      User     @relation(fields: [userId], references: [id])
+  coupon    Coupon   @relation(fields: [couponId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, couponId]) // Ensure a user can redeem a coupon only once
+}
