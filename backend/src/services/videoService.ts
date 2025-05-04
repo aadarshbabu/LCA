@@ -114,3 +114,17 @@ export const getPaginatedVideos = async (
 
   return { videos, total };
 };
+
+export const pendingVideoList = async () => {
+  return prisma.video.findMany({ where: { isApproved: false } });
+};
+
+export const rejectVideo = (id: string, reason: string) => {
+  return prisma.video.update({
+    where: { id: id },
+    data: {
+      isApproved: false,
+      rejectReason: reason,
+    },
+  });
+};

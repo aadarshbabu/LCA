@@ -6,6 +6,7 @@ import {
   getUserProfileService,
   updateProfilePicture,
   getUserByEmail,
+  expireSession,
   // addToBlacklist,
 } from "../services/authService";
 import { Prisma } from "@prisma/client";
@@ -137,13 +138,9 @@ export const uploadProfilePicture = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
   try {
-    // const token =
-    //   req.cookies.authToken || req.headers.authorization?.split(" ")[1];
-
-    // if (token) {
-    //   // Add the token to the blacklist
-    //   await addToBlacklist(token);
-    // }
+    const token =
+      req.cookies.authToken || req.headers.authorization?.split(" ")[1];
+    expireSession(token);
 
     // Clear the auth token cookie
     res.clearCookie("authToken", {

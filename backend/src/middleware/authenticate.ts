@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { getSession } from "../services/authService";
 
-export const authenticate = (
+export const authenticate = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -9,11 +10,15 @@ export const authenticate = (
   const token =
     req.cookies?.authToken ?? req.headers?.authorization?.split(" ")[1]; // Retrieve token from cookies
 
-  console.log("token", req.cookies);
-
   if (!token) {
     res.status(401).json({ error: "Unauthorized" });
     return; // Ensure the request ends here
+  }
+  const session = await getSession(token); // check the session in database.
+
+  if (!session || session.expired || session?.expiresAt < new Date()) {
+    res.status(401).json({ error: "Session Expired Please Login" });
+    return;
   }
 
   try {

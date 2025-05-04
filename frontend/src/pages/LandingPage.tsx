@@ -10,7 +10,7 @@ import { videoService } from "@/services/modules/video";
 
 const LandingPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { videos, isLoading, error } = useFetchVideos({ limit: 4 });
+  const { videos, isLoading, error } = useFetchVideos({ limit: 20 });
   const {
     data: popularCategories,
     isLoading: isCategoriesLoading,
@@ -68,7 +68,7 @@ const LandingPage = () => {
           <div className="container mx-auto px-6">
             <h2 className="text-2xl font-bold mb-6">Trending Topics</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {Array(4)
+              {Array(10)
                 .fill(0)
                 .map((_, index) => (
                   <div key={index} className="space-y-3">

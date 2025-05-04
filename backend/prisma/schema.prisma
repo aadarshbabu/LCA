@@ -69,6 +69,7 @@ model Video {
   duration    String
   description String   @default("")
   isApproved  Boolean  @default(false)
+  rejectReason String  @default("")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userId      String
@@ -128,12 +129,13 @@ model CouponRedemption {
 }
 
 model Session {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String
   token     String   @unique
   createdAt DateTime @default(now())
   expiresAt DateTime
   expired   Boolean  @default(false)
+  isActive Boolean  @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

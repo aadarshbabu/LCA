@@ -2,11 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import { StorageProvider } from "../utils/storageProvider";
-import {
-  createSession,
-  getActiveSessionsCount,
-  deleteOldestSession,
-} from "../services/authService";
 
 const prisma = new PrismaClient();
 
@@ -188,4 +183,12 @@ export const deleteOldestSession = async (userId: string) => {
       data: { expired: true },
     });
   }
+};
+
+export const getSession = async (token: string) => {
+  return prisma.session.findUnique({
+    where: {
+      token: token,
+    },
+  });
 };

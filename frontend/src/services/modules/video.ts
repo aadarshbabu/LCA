@@ -66,4 +66,22 @@ export const videoService = {
       throw error;
     }
   },
+
+  async pendingVideoList() {
+    try {
+      const res = await apiClient.get("/videos/pending-videos");
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async approvedVideo(id: string) {
+    try {
+      const res = await apiClient.patch(`/videos/${id}`);
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

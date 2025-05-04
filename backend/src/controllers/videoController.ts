@@ -6,6 +6,8 @@ import {
   approveVideo,
   isVideoPurchased,
   getPaginatedVideos,
+  pendingVideoList,
+  rejectVideo, // Assuming rejectVideo is implemented in videoService
 } from "../services/videoService";
 
 interface AuthenticatedRequest extends Request {
@@ -62,13 +64,11 @@ export const getVideo = async (req: Request, res: Response) => {
 
     if (video.price > 0) {
       if (!userId) {
-        res
-          .status(401)
-          .json({
-            error: "Authentication required to access this video.",
-            userId,
-            login: false,
-          });
+        res.status(401).json({
+          error: "Authentication required to access this video.",
+          userId,
+          login: false,
+        });
         return;
       }
 
@@ -162,5 +162,33 @@ export const searchVideos = async (req: Request, res: Response) => {
     res.status(200).json(filteredVideos);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+export const getPendingVideos = async (req: Request, res: Response) => {
+  try {
+    const pendingVideos = await pendingVideoList();
+    res.status(200).json(pendingVideos);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const rejectVideoById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    if (!reason || typeof reason !== "string") {
+      res
+        .status(400)
+        .json({ error: "Rejection reason is required and must be a string." });
+      return;
+    }
+
+    const video = await rejectVideo(id, reason); // Assuming rejectVideo is implemented in videoService
+    res.status(200).json(video);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };

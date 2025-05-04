@@ -41,18 +41,6 @@ const AuthPage = () => {
     resolver: zodResolver(UserRegistrationSchema),
   });
 
-  // Check if user is already logged in
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        navigate("/");
-      }
-    };
-
-    checkSession();
-  }, [navigate]);
-
   // Mutation for login
   const loginMutation = useMutation({
     mutationKey: ["loginUser"],
@@ -83,8 +71,10 @@ const AuthPage = () => {
               title: "Login successful",
               description: "Welcome back!",
             });
-            setSession(data.user.id); // This session user update the auth Context. and when auth context update it's fetch the user profile.
             navigate("/");
+            setTimeout(() => {
+              setSession(data.user.id); // This session user update the auth Context. and when auth context update it's fetch the user profile.
+            }, 500);
           },
           onError(error) {
             toast({

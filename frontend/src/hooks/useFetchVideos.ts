@@ -1,6 +1,3 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { VideoCardProps } from "@/components/VideoCard";
 import { useQuery } from "@tanstack/react-query";
 import { videoService } from "@/services/modules/video";
 

@@ -64,13 +64,12 @@ export const authService = {
     }
   },
   // Function to logout a user
-  // logout: async () => {
-  //     try {
-  //         const response = await axios.post('/api/auth/logout');
-  //         return response.data;
-  //     } catch (error) {
-  //         throw error.response.data;
-
-  //     }
-  // }
+  logout: async () => {
+    try {
+      const response = await apiClient.post("/auth/logout");
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  },
 };

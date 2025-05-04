@@ -1,9 +1,8 @@
-
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Table,
   TableBody,
@@ -11,58 +10,39 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Loader2 } from 'lucide-react';
+} from "@/components/ui/table";
+import { Loader2 } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { videoService } from "@/services/modules/video";
 
 const AdminDashboard = () => {
-  const [pendingVideos, setPendingVideos] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: pendingVideos,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["pendingVideo"],
+    queryFn: videoService.pendingVideoList,
+  });
   const { toast } = useToast();
   const { profile } = useAuth();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    fetchPendingVideos();
-  }, []);
-
-  const fetchPendingVideos = async () => {
+  const handleVideoAction = async (
+    videoId: string,
+    status: "approved" | "rejected"
+  ) => {
     try {
-      const { data, error } = await supabase
-        .from('videos')
-        .select(`
-          *,
-          profiles:user_id (username)
-        `)
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
+      await videoService.approvedVideo(videoId);
 
-      if (error) throw error;
-      setPendingVideos(data || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch pending videos",
-        variant: "destructive",
+      queryClient.invalidateQueries({
+        queryKey: ["pendingVideo"],
       });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVideoAction = async (videoId: string, status: 'approved' | 'rejected') => {
-    try {
-      const { error } = await supabase
-        .from('videos')
-        .update({ status })
-        .eq('id', videoId);
-
-      if (error) throw error;
 
       toast({
         title: "Success",
         description: `Video ${status} successfully`,
       });
-
-      setPendingVideos(pendingVideos.filter(video => video.id !== videoId));
     } catch (error) {
       toast({
         title: "Error",
@@ -72,7 +52,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (profile?.role !== 'admin') {
+  if (profile?.type !== "admin") {
     return (
       <div className="container mx-auto py-8 text-center">
         <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
@@ -92,10 +72,10 @@ const AdminDashboard = () => {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
-      
+
       <div className="bg-card rounded-lg p-6 mb-8 border">
         <h2 className="text-xl font-semibold mb-4">Pending Videos</h2>
-        
+
         {pendingVideos.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             No pending videos to review
@@ -115,20 +95,22 @@ const AdminDashboard = () => {
               {pendingVideos.map((video) => (
                 <TableRow key={video.id}>
                   <TableCell>{video.title}</TableCell>
-                  <TableCell>{video.profiles?.username || 'Unknown'}</TableCell>
+                  <TableCell>{video.profiles?.username || "Unknown"}</TableCell>
                   <TableCell>{video.category}</TableCell>
-                  <TableCell>{new Date(video.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {new Date(video.created_at).toDateString()}
+                  </TableCell>
                   <TableCell className="space-x-2">
-                    <Button 
-                      size="sm" 
-                      onClick={() => handleVideoAction(video.id, 'approved')}
+                    <Button
+                      size="sm"
+                      onClick={() => handleVideoAction(video.id, "approved")}
                     >
                       Approve
                     </Button>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="destructive"
-                      onClick={() => handleVideoAction(video.id, 'rejected')}
+                      onClick={() => handleVideoAction(video.id, "rejected")}
                     >
                       Reject
                     </Button>

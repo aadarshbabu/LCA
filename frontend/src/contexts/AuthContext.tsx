@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     initializeAuth();
-  }, []);
+  }, [session]);
 
   const fetchProfile = async () => {
     try {
@@ -59,7 +59,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     try {
       // Add your custom sign out logic here
-      
+
+      await authService.logout();
+
+      // Reset the data
+      setUser(null);
+      setProfile(null);
+
       toast({
         title: "Logged out",
         description: "You have been successfully logged out",
