@@ -20,7 +20,6 @@ const envFile =
     : ".env.production";
 
 dotenv.config({ path: `${process.cwd()}/${envFile}` });
-console.log(`Load ${process.cwd()}/${envFile}`);
 
 import authRoutes from "./routes/authRoutes";
 import videoRoutes from "./routes/videoRoutes";
