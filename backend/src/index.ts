@@ -27,6 +27,8 @@ import videoRoutes from "./routes/videoRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import walletRoutes from "./routes/walletRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
+import creatorRoutes from "./routes/creatorRoutes";
+import commentRoutes from "./routes/commentRoutes";
 import { PrismaClient } from "@prisma/client";
 import winston from "winston";
 import morgan from "morgan";
@@ -136,7 +138,8 @@ app.use("/videos", videoRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/wallet", walletRoutes);
 app.use("/payments", paymentRoutes);
-
+app.use("/creators", creatorRoutes);
+app.use("/comments", commentRoutes);
 // Handle undefined routes
 app.use((req, res) => {
   res.status(404).json({ error: "The requested resource was not found." });

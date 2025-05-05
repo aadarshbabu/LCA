@@ -1071,3 +1071,16 @@
 {"level":"info","message":"User anonymous accessed GET /videos?page=1&limit=20","timestamp":"2025-05-04T19:35:05.357Z"}
 {"level":"info","message":"User anonymous accessed GET /categories/popular-categories","timestamp":"2025-05-04T19:35:05.364Z"}
 {"level":"info","message":"User anonymous accessed GET /auth/profile","timestamp":"2025-05-04T19:35:05.374Z"}
+{"level":"info","message":"User anonymous accessed POST /auth/login","timestamp":"2025-05-05T07:46:03.998Z"}
+{"level":"info","message":"User anonymous accessed GET /videos","timestamp":"2025-05-05T07:46:12.326Z"}
+{"level":"info","message":"User anonymous accessed POST /comments","timestamp":"2025-05-05T07:46:49.449Z"}
+{"level":"info","message":"User anonymous accessed POST /comments","timestamp":"2025-05-05T07:49:15.830Z"}
+{"level":"info","message":"User anonymous accessed POST /comments","timestamp":"2025-05-05T07:49:50.546Z"}
+{"level":"info","message":"User anonymous accessed POST /comments/a70b5c73-78f0-4155-81d3-6116df0a50e5/reply","timestamp":"2025-05-05T07:56:38.928Z"}
+{"level":"info","message":"User anonymous accessed GET /comments/video/2ec8c68b-44f4-4949-adbd-bbb2668609eb/comments","timestamp":"2025-05-05T07:58:29.160Z"}
+{"level":"info","message":"User anonymous accessed GET /comments/videos/2ec8c68b-44f4-4949-adbd-bbb2668609eb/comments","timestamp":"2025-05-05T07:58:46.924Z"}
+{"level":"info","message":"User anonymous accessed POST /comments/a70b5c73-78f0-4155-81d3-6116df0a50e5/reply","timestamp":"2025-05-05T08:00:25.097Z"}
+{"level":"info","message":"User anonymous accessed GET /comments/video/2ec8c68b-44f4-4949-adbd-bbb2668609eb/comments","timestamp":"2025-05-05T08:00:30.624Z"}
+{"level":"info","message":"User anonymous accessed GET /comments/video/2ec8c68b-44f4-4949-adbd-bbb2668609eb/comments","timestamp":"2025-05-05T08:01:18.333Z"}
+{"level":"info","message":"User anonymous accessed GET /comments/video/2ec8c68b-44f4-4949-adbd-bbb2668609eb/comments","timestamp":"2025-05-05T08:03:23.940Z"}
+{"level":"info","message":"User anonymous accessed GET /comments/video/2ec8c68b-44f4-4949-adbd-bbb2668609eb/comments","timestamp":"2025-05-05T08:04:30.883Z"}

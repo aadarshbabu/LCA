@@ -37,6 +37,7 @@ export const submitVideo = async (
     price: number;
     duration: string;
     categoryId: string;
+    description: string;
     url?: string;
     isYoutubeUrl?: boolean;
     resolutions?: Record<string, string>; // Add resolutions field
@@ -55,6 +56,7 @@ export const submitVideo = async (
       url: videoData?.url,
       isYoutubeUrl: videoData?.isYoutubeUrl,
       isApproved: isAdmin,
+      description: videoData.description,
       resolutions: videoData.resolutions || {}, // Store resolutions
     },
   });

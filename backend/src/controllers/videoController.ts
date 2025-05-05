@@ -91,6 +91,8 @@ export const createVideo = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const isAdmin = req.user?.isAdmin || false;
     const userId = req.user?.id || ""; // Ensure userId is provided
+    if (!userId) throw new Error("User not authenticated.");
+
     const video = await submitVideo(req.body, userId, isAdmin);
     res.status(201).json(video);
   } catch (error) {

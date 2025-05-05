@@ -38,14 +38,17 @@ model User {
   googleId  String?
   githubId  String?
   profilePictureUrl String?
+  isCreator  Boolean  @default(false) // Indicates if the user is a creator
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  videos    Video[]
+  videos    Video[]  // Videos created by the user
   wallet    Wallet?
   purchases Purchase[]
   payments   Payment[]
   couponRedemptions CouponRedemption[]
   sessions  Session[]
+  comments  Comment[]
+  creators  Creator?
 }
 
 model Category {
@@ -59,7 +62,7 @@ model Category {
 }
 
 model Video {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   title       String
   thumbnail   String
   price       Float
@@ -78,6 +81,9 @@ model Video {
   url           String?  // URL for YouTube videos
   resolutions   Json?    // JSON object to store custom video URLs for different qualities, e.g., { "360p": "url1", "720p": "url2", "1080p": "url3" }
   isYoutubeUrl  Boolean  @default(false) // Flag to indicate if the video is a YouTube URL or a custom upload
+  comments    Comment[]
+  creatorId   String @default("creator-x")
+  creator     Creator  @relation(fields: [creatorId], references: [id]) // Proper relation to Creator
 }
 
 model Purchase {
@@ -138,4 +144,31 @@ model Session {
   isActive Boolean  @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  content     String
+  videoId     String
+  video       Video    @relation(fields: [videoId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  parentId    String?  // For replies, this will reference another comment's ID
+  parent      Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[] @relation("CommentReplies")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Creator {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  logo        String
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  email       String   @unique
+  videos      Video[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

@@ -9,7 +9,6 @@ import {
   expireSession,
   // addToBlacklist,
 } from "../services/authService";
-import { Prisma } from "@prisma/client";
 import { initializeWallet } from "../services/walletService";
 
 declare global {
@@ -45,10 +44,7 @@ export const register = async (req: Request, res: Response) => {
 
     res.status(201).json(user);
   } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002"
-    ) {
+    if (error.code === "P2002") {
       res.status(400).json({ error: "A user with this email already exists." });
     } else {
       res.status(500).json({ error: "An unexpected error occurred." });
