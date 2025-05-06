@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { valkey } from "../redis";
 
 const prisma = new PrismaClient();
 
@@ -50,6 +51,11 @@ export const replyComment = async ({
 // Get comments for a video
 export const getVideoComments = async (videoId: string) => {
   try {
+    // const cachedComments = await valkey.get(videoId);
+    // if (cachedComments) {
+    //   return JSON.parse(cachedComments);
+    // }
+
     const replies = await prisma.comment.findMany({
       where: { videoId, parentId: null },
       include: {
@@ -75,6 +81,10 @@ export const getVideoComments = async (videoId: string) => {
         },
       },
     });
+
+    valkey.set(videoId, JSON.stringify(replies));
+
+    return replies;
 
     // cache the result in last 1 h and then
   } catch (error) {
