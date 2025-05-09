@@ -118,3 +118,19 @@ export const onboardCreator = async (userId: string, name: string) => {
 
   return creator;
 };
+
+export const getAllCreatorVideos = async (creatorId: string) => {
+  const videos = await prisma.video.findMany({
+    where: { creatorId },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return videos;
+};

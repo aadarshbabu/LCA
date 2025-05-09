@@ -8,6 +8,7 @@ import {
   removeCreator,
   onboardCreator,
   getCreator,
+  getAllCreatorVideos,
 } from "../services/creatorService";
 
 interface AuthenticatedRequest extends Request {
@@ -29,6 +30,20 @@ export const createVideoForCreator = async (
     res.status(201).json(video);
   } catch (error) {
     console.log("err", error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const getCreatorVideos = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new Error("User not authenticated.");
+
+    const creator = await getCreator(userId);
+    if (!creator) throw new Error("Creator not found.");
+    const videos = await getAllCreatorVideos(creator.id);
+    res.status(200).json(videos);
+  } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };

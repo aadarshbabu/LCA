@@ -7,6 +7,7 @@ import {
   getOverallAnalyticsForCreator,
   removeCreatorByAdmin,
   onboardCreatorHandler,
+  getCreatorVideos,
 } from "../controllers/creatorController";
 import { authenticate } from "../middleware/authenticate";
 import { validate } from "../middleware/validate";
@@ -21,6 +22,7 @@ router.post(
   validate(createVideoSchema),
   createVideoForCreator
 );
+router.get("/videos", authenticate, getCreatorVideos);
 router.put("/videos/:id", authenticate, editVideoForCreator);
 router.delete("/videos/:id", authenticate, deleteVideoForCreator);
 router.get("/videos/:id/analytics", authenticate, getVideoAnalyticsForCreator);

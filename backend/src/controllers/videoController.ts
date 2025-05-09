@@ -7,7 +7,8 @@ import {
   isVideoPurchased,
   getPaginatedVideos,
   pendingVideoList,
-  rejectVideo, // Assuming rejectVideo is implemented in videoService
+  rejectVideo,
+  relatedCategoryVideo, // Assuming rejectVideo is implemented in videoService
 } from "../services/videoService";
 
 interface AuthenticatedRequest extends Request {
@@ -192,5 +193,15 @@ export const rejectVideoById = async (req: Request, res: Response) => {
     res.status(200).json(video);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+export const relatedVideo = async (req: Request, res: Response) => {
+  try {
+    const { categoriesId } = req.query;
+    const videos = await relatedCategoryVideo(categoriesId.toString());
+    res.status(200).json(videos);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };

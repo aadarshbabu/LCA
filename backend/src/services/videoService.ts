@@ -129,3 +129,20 @@ export const rejectVideo = (id: string, reason: string) => {
     },
   });
 };
+
+export const relatedCategoryVideo = async (categoriesId: string) => {
+  const categoriesName = await prisma.category.findFirst({
+    where: { id: categoriesId },
+    select: { name: true },
+  });
+  const videos = await prisma.video.findMany({
+    where: {
+      category: {
+        name: {
+          contains: categoriesName.name,
+        },
+      },
+    },
+  });
+  return videos;
+};

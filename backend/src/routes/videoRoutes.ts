@@ -9,6 +9,7 @@ import {
   searchVideos,
   getPendingVideos,
   rejectVideoById,
+  relatedVideo,
 } from "../controllers/videoController";
 import { authenticate } from "../middleware/authenticate";
 import { attachUserInReq } from "../middleware/attachUserInReq";
@@ -158,6 +159,7 @@ router.get("/", getVideos);
 // ✅ Specific static routes FIRST
 router.get("/search", searchVideos);
 router.post("/", authenticate, createVideo);
+router.get("/related-videos", relatedVideo);
 router.get("/pending-videos", getPendingVideos);
 
 // ✅ Routes with subpaths next (more specific dynamic patterns)

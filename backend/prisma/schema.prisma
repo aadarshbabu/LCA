@@ -73,6 +73,8 @@ model Video {
   description String   @default("")
   isApproved  Boolean  @default(false)
   rejectReason String  @default("")
+  status       String  @default("draft")
+  isPublish    Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userId      String
