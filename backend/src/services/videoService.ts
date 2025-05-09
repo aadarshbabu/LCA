@@ -18,12 +18,11 @@ export const getVideoById = async (id: string) => {
       category: {
         select: { id: true, name: true },
       },
-      user: {
+      creator: {
         select: {
           id: true,
-          profilePictureUrl: true,
-          firstName: true,
-          lastName: true,
+          name: true,
+          logo: true,
         },
       },
     },

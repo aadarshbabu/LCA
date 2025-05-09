@@ -28,6 +28,7 @@ export const createVideoForCreator = async (
     const video = await createVideo(req.body, userId);
     res.status(201).json(video);
   } catch (error) {
+    console.log("err", error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -97,6 +98,8 @@ export const getOverallAnalyticsForCreator = async (
 
 export const removeCreatorByAdmin = async (req: Request, res: Response) => {
   try {
+    const user = req.user;
+    if (!user || !user.isAdmin) throw new Error("User not authorized.");
     const { id } = req.params;
 
     await removeCreator(id);
@@ -112,12 +115,12 @@ export const onboardCreatorHandler = async (
 ) => {
   try {
     const userId = req.user?.id;
-    const { name, email } = req.body;
+    const { name } = req.body;
 
     if (!userId) throw new Error("User not authenticated.");
-    if (!name || !email) throw new Error("Name and email are required.");
+    if (!name) throw new Error("Name and email are required.");
 
-    const creator = await onboardCreator(userId, name, email);
+    const creator = await onboardCreator(userId, name);
     res.status(201).json(creator);
   } catch (error) {
     res.status(400).json({ error: error.message });

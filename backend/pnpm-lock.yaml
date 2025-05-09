@@ -68,6 +68,9 @@ dependencies:
   winston:
     specifier: ^3.17.0
     version: 3.17.0
+  zod:
+    specifier: ^3.24.4
+    version: 3.24.4
 
 devDependencies:
   '@types/cookie-parser':
@@ -2439,4 +2442,8 @@ packages:
       validator: 13.15.0
     optionalDependencies:
       commander: 9.5.0
+    dev: false
+
+  /zod@3.24.4:
+    resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
     dev: false

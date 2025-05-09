@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { CreateVideoDto } from "../schema/video/videoSchema";
 
 const prisma = new PrismaClient();
 
@@ -9,16 +10,27 @@ export const getCreator = async (userId: string) => {
   return creator;
 };
 
-export const createVideo = async (data: any, creatorId: string) => {
-  const creator = await prisma.creator.findUnique({ where: { id: creatorId } });
+export const createVideo = async (data: CreateVideoDto, userId: string) => {
+  const creator = await prisma.creator.findUnique({
+    where: { userId: userId },
+  });
   if (!creator) {
     throw new Error("Creator not found.");
   }
 
   return await prisma.video.create({
     data: {
-      ...data,
-      creatorId: creator.id, // Use the creator's ID
+      title: data.title,
+      thumbnail: data.thumbnail,
+      price: data.price,
+      duration: data.duration,
+      description: data.description,
+      url: data.url,
+      resolutions: data.resolutions,
+      isYoutubeUrl: data.isYoutubeUrl,
+      categoryId: data.categoryId,
+      userId: creator.userId,
+      creatorId: creator.id,
     },
   });
 };
@@ -77,11 +89,7 @@ export const removeCreator = async (userId: string) => {
   });
 };
 
-export const onboardCreator = async (
-  userId: string,
-  name: string,
-  email: string
-) => {
+export const onboardCreator = async (userId: string, name: string) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
     throw new Error("User not found.");
@@ -95,7 +103,7 @@ export const onboardCreator = async (
   const creator = await prisma.creator.create({
     data: {
       name,
-      email,
+      email: user.email,
       description: "Default description", // Provide a default description
       logo: "default-logo-url", // Provide a default logo URL
       user: { connect: { id: user.id } },
