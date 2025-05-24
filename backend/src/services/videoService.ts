@@ -20,7 +20,7 @@ export const getVideoById = async (id: string) => {
       },
       creator: {
         select: {
-          id: true,
+          id: true, // ← This is the line TypeScript is angry about
           name: true,
           logo: true,
         },

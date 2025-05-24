@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { valkey } from "../redis";
+// import { valkey } from "../redis";
 
 const prisma = new PrismaClient();
 
@@ -82,7 +82,7 @@ export const getVideoComments = async (videoId: string) => {
       },
     });
 
-    valkey.set(videoId, JSON.stringify(replies));
+    // valkey.set(videoId, JSON.stringify(replies));
 
     return replies;
 
